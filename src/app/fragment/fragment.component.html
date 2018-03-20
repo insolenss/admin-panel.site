@@ -1,0 +1,36 @@
+<div class="fragment-modal" *ngIf="fragment">
+  <div class="k-icon k-i-delete modal-delete" (click)="deleteFragment(fragment.id)"></div>
+  <div class="k-icon filter-icon" [ngClass]="{'k-i-filter': userParamsService.searchFragment !== fragment.id, 'k-i-filter-clear': userParamsService.searchFragment === fragment.id}" (click)="userParamsService.updateParam('fragment', fragment.id)"></div>
+  <div class="k-icon k-i-close close-modal" (click)="closeModal();"></div>
+  <div class="row">
+    <div class="col-md-6">
+        <div id="video-wrapper"></div>
+    </div>
+    <div class="col-md-6">
+        <p class="title">{{ fragment?.tagName }}</p>
+        <hr />
+        <div class="form-group">
+          <p class="param-title">Attributes</p>
+          <textarea [readonly]="!isEdit" [(ngModel)]="fragment.attributes"></textarea>
+          <div class="edit-controls">
+            <button *ngIf="!isEdit" type="button" class="btn btn-default" (click)="isEdit = true;">Edit attributes</button>
+            <button *ngIf="isEdit" type="button" class="btn btn-default" (click)="isEdit = false; initialiseFragment();">Cancel</button>
+            <button *ngIf="isEdit" type="button" class="btn btn-success" (click)="saveAttributes();">Save</button>
+          </div>
+        </div>
+        <hr />
+        <div class="form-group">
+          <label for="fragments-owner-id">OwnerID:</label><input type="text" id="fragments-owner-id" [(ngModel)]="fragment.ownerid" style="margin: 0 20px; width: 300px;"><button type="button" class="btn btn-success" (click)="changeOwner();">Set Owner</button>
+        </div>
+        <hr />
+        <div class="form-group">
+          <span class="param-title">Status: {{ fragment?.status }}</span>
+          <div class="edit-controls">
+            <button type="button" class="btn btn-success" (click)="makeGlobal();">Make global</button>
+            <button type="button" class="btn btn-warning" (click)="makeAttestation();">Make attestation</button>
+            <button type="button" class="btn btn-basic" (click)="makePrivate();">Make private</button>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>

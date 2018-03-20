@@ -1,0 +1,107 @@
+<h1>Users</h1>
+<hr />
+<div class="form-constrols row">
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="name-search">Search name:</label>
+      <input type="text" class="form-control" id="name-search" (input)="searchUsersByName($event)">
+    </div>
+    <div class="form-group">
+      <label for="email-search">Search email:</label>
+      <input type="text" class="form-control" id="email-search" (input)="searchUsersByEmail($event)">
+    </div>
+    <div class="form-group">
+      <label for="userid-search">Search userid:</label>
+      <input type="text" class="form-control" id="userid-search" (input)="searchUsersById($event)">
+    </div>
+  </div>
+  <div class="col-md-7 col-md-offset-1">
+    <div class="form-group">
+      <p style="font-weight: bold;">Access Level</p>
+      <kendo-multiselect [data]="['guest', 'user', 'moderator', 'admin', 'b2b']"
+                         [filterable]="false"
+                         [value]="usersService.findParam('access_level').value.split(',')"
+                         (valueChange)="accessChange($event)"
+      >
+      </kendo-multiselect>
+    </div>
+    <div class="form-group">
+      <p style="font-weight: bold;">Enabled</p>
+      <kendo-dropdownlist
+              [data]="['true', 'false']"
+              [value]="usersService.findParam('enable').value"
+              (valueChange)="enableChange($event)"
+      >
+      </kendo-dropdownlist>
+    </div>
+    <div class="form-group">
+      <div class="row">
+          <div class="col-md-3">
+              <p style="font-weight: bold;">Last login from</p>
+              <kendo-dateinput
+                      [format]="'dd.MM.yyyy HH:mm:ss'"
+                      [value]="last_login_from"
+                      (valueChange)="changeLastLoginFrom($event)"
+              ></kendo-dateinput>
+          </div>
+          <div class="col-md-3">
+              <p style="font-weight: bold;">Last login to</p>
+              <kendo-dateinput
+                      [format]="'dd.MM.yyyy HH:mm:ss'"
+                      [value]="last_login_to"
+                      (valueChange)="changeLastLoginTo($event)"
+              ></kendo-dateinput>
+          </div>
+          <div class="col-md-3">
+              <p style="font-weight: bold;">Don't use date filters</p>
+              <input type="checkbox" [checked]="ignoreDateFilters" (change)="IgnoreDateFilters($event)">
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-1 col-md-offset-11" style="text-align: right;">
+    <div class="form-group">
+      <label for="pagesize">Pagesize:</label>
+      <select class="form-control" id="pagesize" ([ngModel])="usersService.findParam('pagesize').value" (change)="pageSizeChange($event)">
+        <option [selected]="usersService.findParam('pagesize').value == '1'" [value]="1">1</option>
+        <option [selected]="usersService.findParam('pagesize').value == '5'" [value]="5">5</option>
+        <option [selected]="usersService.findParam('pagesize').value == '10'" [value]="10">10</option>
+        <option [selected]="usersService.findParam('pagesize').value == '20'" [value]="20">20</option>
+        <option [selected]="usersService.findParam('pagesize').value == '50'" [value]="50">50</option>
+        <option [selected]="usersService.findParam('pagesize').value == '100'" [value]="100">100</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="users-table table">
+  <kendo-grid
+          [data]="gridView"
+          [pageSize]="usersService.findParam('pagesize').value"
+          [skip]="skip"
+          [sortable]="true"
+          [sort]="sort"
+          [pageable]="true"
+          [scrollable]="'none'"
+          (pageChange)="pageChange($event)"
+          (sortChange)="sortChange($event)"
+  >
+    <kendo-grid-column field="id" [sortable]="false" class="td-with-icon"><ng-template kendoGridCellTemplate let-dataItem>{{ dataItem.id }}<span class="k-icon filter-icon icon-in-field" [ngClass]="{'k-i-filter': userParamsService.searchUser !== dataItem.id, 'k-i-filter-clear': userParamsService.searchUser === dataItem.id}" (click)="userParamsService.updateParam('user', dataItem.id)"></span></ng-template></kendo-grid-column>
+    <kendo-grid-column field="email"></kendo-grid-column>
+    <kendo-grid-column field="username"></kendo-grid-column>
+    <kendo-grid-column field="cdate"><ng-template kendoGridCellTemplate let-dataItem>{{dataItem.cdate * 1000  | date:'dd.MM.yyyy HH:mm:ss'}}</ng-template></kendo-grid-column>
+    <kendo-grid-column field="lastlogin"><ng-template kendoGridCellTemplate let-dataItem>{{dataItem.lastlogin * 1000  | date:'dd.MM.yyyy HH:mm:ss'}}</ng-template></kendo-grid-column>
+    <kendo-grid-column field="access_level"></kendo-grid-column>
+    <kendo-grid-column field="enable"></kendo-grid-column>
+    <kendo-grid-column field="all_usage"><ng-template kendoGridCellTemplate let-dataItem><pre>{{ dataItem.counters.all_time | json }}</pre></ng-template></kendo-grid-column>
+    <kendo-grid-column><ng-template kendoGridCellTemplate let-dataItem><div class="edit-icons"><a href="javascript:void(0)"><span class="k-icon k-i-edit" (click)="editUser(dataItem.id)"></span></a><a *ngIf="userParamsService.isAdmin()" href="javascript:void(0)"><span class="k-icon k-i-delete" (click)="deleteUser(dataItem.id)"></span></a></div></ng-template></kendo-grid-column>
+  </kendo-grid>
+</div>
+<div class="user-modal-layout" [ngClass]="{'opened': userModalOpened}">
+  <div class="modal-shadow" (click)="closeModal();"></div>
+  <div class="user-modal">
+    <div class="k-icon k-i-close close-user-modal" (click)="closeModal();"></div>
+    <app-user *ngIf="userModalOpened" [id]="editedUserId"></app-user>
+  </div>
+</div>

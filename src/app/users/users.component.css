@@ -1,0 +1,51 @@
+.user-modal-layout {
+    position: fixed;
+    z-index: 1;
+}
+
+.user-modal-layout.opened {
+    display: block;
+}
+
+.modal-shadow {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, .15);
+    z-index: 10;
+    display: none;
+    cursor: pointer;
+}
+
+.user-modal-layout.opened .modal-shadow {
+    display: block;
+}
+
+.user-modal {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    background-color: #fff;
+    z-index: 100;
+    transition: .5s;
+}
+
+.user-modal-layout.opened .user-modal {
+    width: 700px;
+}
+
+.close-user-modal {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 40px;
+    display: none;
+}
+
+.user-modal-layout.opened .close-user-modal {
+    display: block;
+}

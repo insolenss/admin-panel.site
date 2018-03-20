@@ -1,0 +1,23 @@
+<div class="logged-user-name">
+  <p>{{ userParamsService.userName }} ({{ userParamsService.getAccessLevel() }})</p>
+  <a href="javascript:void(0)" (click)="logout()">Logout <span class="k-icon k-i-logout"></span></a>
+</div>
+<div class="navigation-link">
+  <div class="main-menu-title">Navigation</div>
+  <ul>
+    <li><a routerLink="/users" routerLinkActive="active">Users</a></li>
+    <li><a routerLink="/fragments" routerLinkActive="active">Fragments</a></li>
+    <li><a routerLink="/tags" routerLinkActive="active">Tags</a></li>
+    <li><a routerLink="/splices" routerLinkActive="active">Splices</a></li>
+    <li><a routerLink="/handles" routerLinkActive="active">Handles</a></li>
+  </ul>
+</div>
+<div class="global-filters">
+  <div class="main-menu-title">Global filters</div>
+  <ul>
+    <li>User: <span [ngClass]="({'with-param': userParamsService.searchUser})">{{ userParamsService.searchUser ? userParamsService.searchUser : 'none' }}</span><span *ngIf="userParamsService.searchUser" class="k-icon k-i-close-circle" (click)="userParamsService.clear();"></span></li>
+    <li>Fragment: <span [ngClass]="({'with-param': userParamsService.searchFragment})">{{ userParamsService.searchFragment ? userParamsService.searchFragment : 'none' }}</span><span *ngIf="userParamsService.searchFragment" class="k-icon k-i-close-circle" (click)="userParamsService.clear();"></span></li>
+    <li>Tag: <span [ngClass]="({'with-param': userParamsService.searchTag})">{{ userParamsService.searchTag ? userParamsService.searchTag : 'none' }}</span><span *ngIf="userParamsService.searchTag" class="k-icon k-i-close-circle" (click)="userParamsService.clear()"></span></li>
+    <li>Splice: <span [ngClass]="({'with-param': userParamsService.searchSplice})">{{ userParamsService.searchSplice ? userParamsService.searchSplice : 'none' }}</span><span *ngIf="userParamsService.searchSplice" class="k-icon k-i-close-circle" (click)="userParamsService.clear();"></span></li>
+  </ul>
+</div>

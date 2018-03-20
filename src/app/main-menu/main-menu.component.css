@@ -1,0 +1,51 @@
+.logged-user-name {
+    text-align: center;
+    border-bottom: 3px solid #fff;
+    padding: 10px 0;
+}
+
+.logged-user-name a {
+    font-size: 14px;
+}
+
+.navigation-link,
+.global-filters {
+    border-bottom: 3px solid #fff;
+    text-align: center;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul li a {
+    width: 100%;
+    padding: 5px 0;
+    display: block;
+}
+
+ul li a:hover,
+ul li a.active {
+    color: #fff;
+    background-color: rgb(255,18,86);
+}
+
+.main-menu-title {
+    font-size: 24px;
+    padding: 5px 0 10px;
+    font-weight: bold;
+}
+
+.global-filters li {
+    padding: 5px 0;
+}
+
+.with-param {
+    font-size: 14px;
+}
+
+.k-i-close-circle {
+    margin-left: 10px;
+}

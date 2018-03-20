@@ -1,0 +1,34 @@
+.popup-shadow {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #333333;
+}
+
+.auth-form {
+    width: 90%;
+    max-width: 300px;
+    padding: 20px;
+    background-color: #ffffff;
+    z-index: 10;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 8px;
+}
+
+.auth-form input {
+    width: 100%;
+    display: block;
+    height: 30px;
+    border: 1px solid;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.auth-form input + input {
+    margin-top: 10px;
+}

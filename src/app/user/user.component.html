@@ -1,0 +1,77 @@
+<div class="user-wrapper">
+  <div class="user-avatar">
+    <img src="{{ user?.avatar }}">
+  </div>
+  <div class="user-name">{{ user?.username }}<br /><span class="user-name-id">id: {{ user?.id }}</span></div>
+  <hr />
+  <div class="user-enable">
+    <span class="param-title">Enabled</span>
+    <kendo-switch
+        [ngModel]="user?.enable"
+        [disabled]="!userParamsService.isAdmin()"
+        (valueChange)="changeEnable($event)"
+    ></kendo-switch>
+  </div>
+  <hr />
+  <div class="form-group">
+    <label class="param-title">Access level</label>
+    <kendo-dropdownlist
+            [data]="[
+                  'guest',
+                  'user',
+                  'b2b',
+                  'moderator',
+                  'admin'
+              ]"
+            [value]="user?.access_level"
+            [readonly]="!userParamsService.isAdmin()"
+            (valueChange)="changeAccessLevel($event)"
+    >
+    </kendo-dropdownlist>
+  </div>
+  <hr />
+  <h3>User params:</h3>
+  <div class="user-params" *ngIf="user">
+    <div>
+      <div class="form-group">
+        <label class="param-title" for="userName">Username</label><input type="text" id="userName" [(ngModel)] = "user.username" [readonly]="!isEdit"><button *ngIf="isEdit && !editPassword" type="button" class="btn btn-default btn-sm" (click)="editPassword = true;" style="margin-left: 20px;">Set new password</button>
+      </div>
+      <div *ngIf="isEdit && editPassword" class="form-group">
+        <label class="param-title" for="userPassword">New password</label><input type="text" id="userPassword" [(ngModel)] = "newPassword">
+      </div>
+      <div class="form-group">
+        <label class="param-title">Gender</label>
+        <kendo-dropdownlist
+                [data]="[
+                  '',
+                  'male',
+                  'female'
+              ]"
+                [value]="user?.gender"
+                [readonly]="!isEdit"
+        >
+        </kendo-dropdownlist>
+      </div>
+      <div class="form-group">
+        <label class="param-title">Locale</label>
+        <kendo-dropdownlist
+                [data]="localesArray"
+                [value]="user?.locale"
+                [readonly]="!isEdit"
+        >
+        </kendo-dropdownlist>
+      </div>
+      <div class="form-group">
+        <label class="param-title" for="userEmail">Email</label><input type="email" id="userEmail" [(ngModel)] = "user.email" [readonly]="!isEdit">
+      </div>
+      <div class="form-group">
+        <label class="param-title" for="userBirthday">Birthday</label><input type="text" id="userBirthday" [(ngModel)] = "user.bithday" [readonly]="!isEdit">
+      </div>
+    </div>
+  </div>
+  <div class="edit-controls">
+    <button *ngIf="!isEdit" type="button" class="btn btn-default" (click)="isEdit = true;">Edit data</button>
+    <button *ngIf="isEdit" type="button" class="btn btn-default" (click)="isEdit = false; initialiseUser();">Cancel</button>
+    <button *ngIf="isEdit" type="button" class="btn btn-success" (click)="saveUser();">Save</button>
+  </div>
+</div>

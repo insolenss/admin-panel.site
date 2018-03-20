@@ -1,0 +1,71 @@
+<h1>Tags</h1>
+<hr />
+<div class="form-constrols row">
+  <div class="col-md-4">
+  </div>
+  <div class="col-md-7 col-md-offset-1">
+    <!-- <div class="form-group">
+      <p style="font-weight: bold;">Status</p>
+      <kendo-multiselect [data]="['private', 'public', 'global']"
+                         [filterable]="false"
+                         [value]="fragmentsService.findParam('status').value.split(',')"
+                         (valueChange)="statusChange($event)"
+      >
+      </kendo-multiselect>
+    </div> -->
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-3">
+          <p style="font-weight: bold;">Create date from</p>
+          <kendo-dateinput
+                  [format]="'dd.MM.yyyy HH:mm:ss'"
+                  [value]="from"
+                  (valueChange)="changeFrom($event)"
+          ></kendo-dateinput>
+        </div>
+        <div class="col-md-3">
+          <p style="font-weight: bold;">Create date to</p>
+          <kendo-dateinput
+                  [format]="'dd.MM.yyyy HH:mm:ss'"
+                  [value]="to"
+                  (valueChange)="changeTo($event)"
+          ></kendo-dateinput>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-1 col-md-offset-11" style="text-align: right;">
+    <div class="form-group">
+      <label for="pagesize">Pagesize:</label>
+      <select class="form-control" id="pagesize" ([ngModel])="tagsService.findParam('pagesize').value" (change)="pageSizeChange($event)">
+        <option [selected]="tagsService.findParam('pagesize').value == '1'" [value]="1">1</option>
+        <option [selected]="tagsService.findParam('pagesize').value == '5'" [value]="5">5</option>
+        <option [selected]="tagsService.findParam('pagesize').value == '10'" [value]="10">10</option>
+        <option [selected]="tagsService.findParam('pagesize').value == '20'" [value]="20">20</option>
+        <option [selected]="tagsService.findParam('pagesize').value == '50'" [value]="50">50</option>
+        <option [selected]="tagsService.findParam('pagesize').value == '100'" [value]="100">100</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="users-table table">
+  <kendo-grid
+          [data]="gridView"
+          [pageSize]="tagsService.findParam('pagesize').value"
+          [skip]="skip"
+          [sortable]="true"
+          [sort]="sort"
+          [pageable]="true"
+          [scrollable]="'none'"
+          (pageChange)="pageChange($event)"
+          (sortChange)="sortChange($event)"
+  >
+    <kendo-grid-column field="id" [sortable]="false"></kendo-grid-column>
+    <kendo-grid-column field="tag"></kendo-grid-column>
+    <kendo-grid-column field="count" [sortable]="false"><ng-template kendoGridCellTemplate let-dataItem><span class="count-global-tags">{{ dataItem.global.length }}</span><span class="count-private-tags">{{ dataItem.private.length }}</span></ng-template></kendo-grid-column>
+    <kendo-grid-column field="cdate"><ng-template kendoGridCellTemplate let-dataItem>{{dataItem.cdate * 1000  | date:'dd.MM.yyyy HH:mm:ss'}}</ng-template></kendo-grid-column>
+    <kendo-grid-column><ng-template kendoGridCellTemplate let-dataItem></ng-template></kendo-grid-column>
+  </kendo-grid>
+</div>
