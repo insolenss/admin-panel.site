@@ -82,7 +82,7 @@
           (pageChange)="pageChange($event)"
           (sortChange)="sortChange($event)"
   >
-    <kendo-grid-column field="id" [sortable]="false"></kendo-grid-column>
+    <kendo-grid-column field="id" [sortable]="false" class="td-with-icon"><ng-template kendoGridCellTemplate let-dataItem>{{ dataItem.id }}<span class="k-icon filter-icon icon-in-field" [ngClass]="{'k-i-filter': userParams.searchFragment !== dataItem.id, 'k-i-filter-clear': userParams.searchFragment === dataItem.id}" (click)="userParams.updateParam('fragment', dataItem.id)"></span></ng-template></kendo-grid-column>
     <kendo-grid-column field="ownerid"></kendo-grid-column>
     <kendo-grid-column field="tagid"></kendo-grid-column>
     <kendo-grid-column field="cdate"><ng-template kendoGridCellTemplate let-dataItem>{{dataItem.cdate * 1000  | date:'dd.MM.yyyy HH:mm:ss'}}</ng-template></kendo-grid-column>

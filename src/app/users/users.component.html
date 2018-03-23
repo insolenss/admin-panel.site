@@ -37,10 +37,15 @@
     <div class="form-group">
       <div class="row">
           <div class="col-md-3">
+            <p style="font-weight: bold;">Use date filters</p>
+            <input type="checkbox" [checked]="useDateFilters" (change)="UseDateFilters()">
+          </div>
+          <div class="col-md-3">
               <p style="font-weight: bold;">Last login from</p>
               <kendo-dateinput
                       [format]="'dd.MM.yyyy HH:mm:ss'"
                       [value]="last_login_from"
+                      [disabled]="!usersService.useDateFilters"
                       (valueChange)="changeLastLoginFrom($event)"
               ></kendo-dateinput>
           </div>
@@ -49,12 +54,9 @@
               <kendo-dateinput
                       [format]="'dd.MM.yyyy HH:mm:ss'"
                       [value]="last_login_to"
+                      [disabled]="!usersService.useDateFilters"
                       (valueChange)="changeLastLoginTo($event)"
               ></kendo-dateinput>
-          </div>
-          <div class="col-md-3">
-              <p style="font-weight: bold;">Don't use date filters</p>
-              <input type="checkbox" [checked]="ignoreDateFilters" (change)="IgnoreDateFilters($event)">
           </div>
       </div>
     </div>

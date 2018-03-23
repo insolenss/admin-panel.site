@@ -30,6 +30,14 @@ import { FragmentComponent } from './fragment/fragment.component';
 import { FragmentService } from './fragments/fragment.service';
 import { TagsComponent } from './tags/tags.component';
 import { TagsService } from './tags/tags.service';
+import { SplicesComponent } from './splices/splices.component';
+import { SpliceComponent } from './splice/splice.component';
+import {SplicesService} from './splices/splices.service';
+import { HandlesComponent } from './handles/handles.component';
+import {HandlesService} from './handles/handles.service';
+import { RegisterUserComponent } from './register-user/register-user.component';
+import { UploadComponent } from './upload/upload.component';
+import { ButtonsModule } from '@progress/kendo-angular-buttons';
 
 
 const appRoutes: Routes = [
@@ -38,7 +46,12 @@ const appRoutes: Routes = [
     { path: 'users', component: UsersComponent, canActivate: [AppGuard] },
     { path: 'fragments', component: FragmentsComponent, canActivate: [AppGuard] },
     { path: 'fragments/:editedFragmentId', component: FragmentsComponent, canActivate: [AppGuard] },
+    { path: 'splices', component: SplicesComponent, canActivate: [AppGuard] },
+    { path: 'splices/:editedSpliceId', component: SplicesComponent, canActivate: [AppGuard] },
     { path: 'tags', component: TagsComponent, canActivate: [AppGuard] },
+    { path: 'handles', component: HandlesComponent, canActivate: [AppGuard] },
+    { path: 'register-user', component: RegisterUserComponent, canActivate: [AppGuard] },
+    { path: 'upload', component: UploadComponent, canActivate: [AppGuard] },
     { path: '**', component: UsersComponent, canActivate: [AppGuard] }
 ];
 
@@ -51,7 +64,12 @@ const appRoutes: Routes = [
     FragmentsComponent,
     MainMenuComponent,
     FragmentComponent,
-    TagsComponent
+    TagsComponent,
+    SplicesComponent,
+    SpliceComponent,
+    HandlesComponent,
+    RegisterUserComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,
@@ -63,9 +81,10 @@ const appRoutes: Routes = [
     InputsModule,
     DropDownsModule,
     DialogsModule,
-    DateInputsModule
+    DateInputsModule,
+    ButtonsModule
   ],
-  providers: [AuthService, AppGuard, UsersService, UserService, Helper, Locales, UserParamsService, ErrorHandler, FragmentsService, FragmentService, TagsService],
+  providers: [AuthService, AppGuard, UsersService, UserService, Helper, Locales, UserParamsService, ErrorHandler, FragmentsService, FragmentService, TagsService, SplicesService, HandlesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

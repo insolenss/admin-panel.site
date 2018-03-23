@@ -38,7 +38,7 @@ export class UsersService extends BaseApi {
         value: (Math.ceil(Date.now() / 1000)).toString()
     }];
 
-    ignoreDateFilters = false;
+    useDateFilters = false;
 
     constructor (public http: HttpClient) {
         super(http);
@@ -46,7 +46,7 @@ export class UsersService extends BaseApi {
 
     getUsers() {
         let newFilters = [];
-        if (this.ignoreDateFilters) {
+        if (!this.useDateFilters) {
             this.filters.forEach(function (item) {
                 if (item.title !== 'lastlogin_from' && item.title !== 'lastlogin_to') {
                     newFilters.push(item);

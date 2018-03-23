@@ -1,0 +1,16 @@
+<h1>Register user</h1>
+<div>
+  <div>
+    <kendo-textbox-container floatingLabel="Login">
+      <input kendoTextBox ([ngModel])="login" />
+    </kendo-textbox-container>
+  </div>
+  <div>
+    <kendo-textbox-container floatingLabel="Password">
+      <input kendoTextBox ([ngModel])="password" />
+    </kendo-textbox-container>
+  </div>
+  <div>
+    <button kendoButton (click)="registerUser()" [primary]="true" style="margin-top: 20px;">Register</button>
+  </div>
+</div>

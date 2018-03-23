@@ -1,17 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ErrorHandler} from '../error-handler';
 import {UserParamsService} from '../user-params.service';
 import {SortDescriptor} from '@progress/kendo-data-query';
 import {GridDataResult, PageChangeEvent} from '@progress/kendo-angular-grid';
 import {FragmentsService} from './fragments.service';
 import { ActivatedRoute } from '@angular/router';
+import {Subject} from 'rxjs/Subject';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-fragments',
   templateUrl: './fragments.component.html',
   styleUrls: ['./fragments.component.css']
 })
-export class FragmentsComponent implements OnInit {
+export class FragmentsComponent implements OnInit, OnDestroy {
+
+  private ngUnsubscribe = new Subject();
 
   constructor(
       public fragmentsService: FragmentsService,
@@ -34,8 +38,15 @@ export class FragmentsComponent implements OnInit {
 
     ngOnInit() {
         this.fragmentsService.fragmentModalOpened = false;
-        this.userParams.searchUserSubject.subscribe((id: String) => this.initialiseGrid());
+        this.userParams.searchUserSubject
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((id: String) => this.reInitialiseGrid());
         this.initialiseGrid();
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     public initialiseGrid(): void {
@@ -43,8 +54,6 @@ export class FragmentsComponent implements OnInit {
         if (this.route.params['value'].editedFragmentId) {
             this.fragmentsService.fragmentModalOpened = true;
         }
-
-
 
         this.from = new Date(+(this.fragmentsService.findParam('from').value) * 1000);
         this.to = new Date(+(this.fragmentsService.findParam('to').value) * 1000);
@@ -54,16 +63,16 @@ export class FragmentsComponent implements OnInit {
 
         if (this.userParams.searchFragment || this.userParams.searchUser || this.userParams.searchTag || this.userParams.searchSplice) {
             if (this.userParams.searchUser) {
-                const fakeEvent = {target: {value: this.userParams.searchUser}};
-                this.searchFragmentsByOwnerId(fakeEvent);
+                this.fragmentsService.findParam('page').value = '1';
+                this.fragmentsService.findParam('ownerid').value = this.userParams.searchUser;
             }
             if (this.userParams.searchFragment) {
                 const fakeEvent = {target: {value: this.userParams.searchFragment}};
                 this.searchFragmentsById(fakeEvent);
             }
             if (this.userParams.searchTag) {
-                const fakeEvent = {target: {value: this.userParams.searchTag}};
-                this.searchFragmentByTagId(fakeEvent);
+                this.fragmentsService.findParam('page').value = '1';
+                this.fragmentsService.findParam('tagid').value = this.userParams.searchTag;
             }
 
             // Check if will used
@@ -71,38 +80,40 @@ export class FragmentsComponent implements OnInit {
                 const fakeEvent = {target: {value: this.userParams.searchSplice}};
                 this.searchFragmentsById(fakeEvent);
             }
-        } else {
-            this.fragmentsService.getFragments()
-                .subscribe((response: Response) => {
-                    console.log(response);
-                    if (response['error'] === 0) {
-                        this.total = response['count'];
-                        for (const fragment of response['fragments']) {
-                            this.fragmentsService.getFragment(fragment)
-                                .subscribe((responseFragment: Response) => {
-                                    if (responseFragment['error'] === 0) {
-                                        console.log(responseFragment);
-                                        this.fragments.push(responseFragment);
-                                    } else {
-                                        this.errorHandler.initError(responseFragment['error'], responseFragment['error_message']);
-                                    }
-                                });
-                        }
-                        this.gridView = {
-                            data: this.fragments,
-                            total: response['count']
-                        };
-                    } else {
-                        this.errorHandler.initError(response['error'], response['error_message']);
-                    }
-                });
         }
+        this.fragmentsService.getFragments()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((response: Response) => {
+                console.log(response);
+                if (response['error'] === 0) {
+                    this.total = response['count'];
+                    for (const fragment of response['fragments']) {
+                        this.fragmentsService.getFragment(fragment)
+                            .pipe(takeUntil(this.ngUnsubscribe))
+                            .subscribe((responseFragment: Response) => {
+                                if (responseFragment['error'] === 0) {
+                                    console.log(responseFragment);
+                                    this.fragments.push(responseFragment);
+                                } else {
+                                    this.errorHandler.initError(responseFragment['error'], responseFragment['error_message']);
+                                }
+                            });
+                    }
+                    this.gridView = {
+                        data: this.fragments,
+                        total: response['count']
+                    };
+                } else {
+                    this.errorHandler.initError(response['error'], response['error_message']);
+                }
+            });
     }
 
     public searchFragmentsById(event) {
         if (event.target.value !== '') {
             this.fragments.length = 0;
             this.fragmentsService.getFragment(event.target.value)
+                .pipe(takeUntil(this.ngUnsubscribe))
                 .subscribe((responseFragment: Response) => {
                     if (responseFragment['error'] === 0) {
                         this.fragments.push(responseFragment);
@@ -182,6 +193,7 @@ export class FragmentsComponent implements OnInit {
     public deleteFragment(id) {
         if (confirm('Вы действительно хотите удалить данный фрагмент? (id = ' + id + ')')) {
             this.fragmentsService.deleteFragment({id: id})
+                .pipe(takeUntil(this.ngUnsubscribe))
                 .subscribe((response: Response) => {
                     if (response['error'] === 0) {
                         this.initialiseGrid();
@@ -195,6 +207,17 @@ export class FragmentsComponent implements OnInit {
     public editFragment(id) {
         this.fragmentsService.fragmentModalOpened = true;
         this.editedFragmentId = id;
+    }
+
+    public reInitialiseGrid() {
+        this.fragmentsService.findParam('ownerid').value = '';
+        this.fragmentsService.findParam('tagid').value = '';
+        if (this.userParams.searchFragment) {
+            const fakeEvent = {target: {value: this.userParams.searchFragment}};
+            this.searchFragmentsById(fakeEvent);
+        } else {
+            this.initialiseGrid();
+        }
     }
 
 }

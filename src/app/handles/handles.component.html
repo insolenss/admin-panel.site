@@ -1,0 +1,36 @@
+<h1>Handles</h1>
+<hr />
+<div class="form-constrols row">
+
+</div>
+<div class="row">
+  <div class="col-md-1 col-md-offset-11" style="text-align: right;">
+    <div class="form-group">
+      <label for="pagesize">Pagesize:</label>
+      <select class="form-control" id="pagesize" ([ngModel])="handlesService.findParam('pagesize').value" (change)="pageSizeChange($event)">
+        <option [selected]="handlesService.findParam('pagesize').value == '1'" [value]="1">1</option>
+        <option [selected]="handlesService.findParam('pagesize').value == '5'" [value]="5">5</option>
+        <option [selected]="handlesService.findParam('pagesize').value == '10'" [value]="10">10</option>
+        <option [selected]="handlesService.findParam('pagesize').value == '20'" [value]="20">20</option>
+        <option [selected]="handlesService.findParam('pagesize').value == '50'" [value]="50">50</option>
+        <option [selected]="handlesService.findParam('pagesize').value == '100'" [value]="100">100</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="users-table table">
+  <kendo-grid
+          [data]="gridView"
+          [pageSize]="handlesService.findParam('pagesize').value"
+          [skip]="skip"
+          [sortable]="true"
+          [sort]="sort"
+          [pageable]="true"
+          [scrollable]="'none'"
+          (pageChange)="pageChange($event)"
+          (sortChange)="sortChange($event)"
+  >
+    <kendo-grid-column field="id" [sortable]="false"></kendo-grid-column>
+    <kendo-grid-column><ng-template kendoGridCellTemplate let-dataItem></ng-template></kendo-grid-column>
+  </kendo-grid>
+</div>

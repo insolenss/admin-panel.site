@@ -11,9 +11,7 @@ export class MainMenuComponent implements OnInit {
 
   constructor(public userParamsService: UserParamsService, private authService: AuthService) { }
 
-  ngOnInit() {
-    console.log(this.userParamsService.userName);
-  }
+  ngOnInit() {}
 
   public logout() {
     this.authService.logout();

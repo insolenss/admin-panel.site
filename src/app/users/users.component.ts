@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {UsersService} from './users.service';
 import { SortDescriptor, orderBy } from '@progress/kendo-data-query';
 import { trigger, style, transition, animate, keyframes, query, stagger } from '@angular/animations';
@@ -14,6 +14,8 @@ import {Router} from '@angular/router';
 import {ErrorHandler} from '../error-handler';
 import {UserParamsService} from '../user-params.service';
 import { FragmentsService } from '../fragments/fragments.service';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs/Subject';
 
 
 
@@ -22,7 +24,9 @@ import { FragmentsService } from '../fragments/fragments.service';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, OnDestroy {
+
+    private ngUnsubscribe = new Subject();
 
     constructor(
         public usersService: UsersService,
@@ -47,8 +51,15 @@ export class UsersComponent implements OnInit {
     public last_login_to: Date;
 
     ngOnInit() {
-        this.userParamsService.searchUserSubject.subscribe((id: String) => this.initialiseGrid());
+        this.userParamsService.searchUserSubject
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((id: String) => this.initialiseGrid());
         this.initialiseGrid();
+    }
+
+    ngOnDestroy() {
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 
     public initialiseGrid(): void {
@@ -58,7 +69,7 @@ export class UsersComponent implements OnInit {
         this.users.length = 0;
         this.skip = (+(this.usersService.findParam('page').value) - 1) * +(this.usersService.findParam('pagesize').value);
 
-        this.ignoreDateFilters = this.usersService.ignoreDateFilters;
+        this.ignoreDateFilters = this.usersService.useDateFilters;
 
         if (this.userParamsService.searchFragment || this.userParamsService.searchUser || this.userParamsService.searchTag || this.userParamsService.searchSplice) {
             if (this.userParamsService.searchUser) {
@@ -66,17 +77,18 @@ export class UsersComponent implements OnInit {
                 this.searchUsersById(fakeEvent);
             }
             if (this.userParamsService.searchFragment) {
-                console.log(this.userParamsService.searchFragment);
                 this.searchUsersByTagId(this.userParamsService.searchFragment);
             }
         } else {
             this.usersService.getUsers()
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((response: Response) => {
                 console.log(response);
                 if (response['error'] === 0) {
                     this.total = response['count'];
                     for (const user of response['users']) {
                         this.usersService.getUser(user)
+                            .pipe(takeUntil(this.ngUnsubscribe))
                             .subscribe((responseUser: Response) => {
                                 if (responseUser['error'] === 0) {
                                     console.log(responseUser);
@@ -136,6 +148,7 @@ export class UsersComponent implements OnInit {
             this.usersService.findParam('page').value = '1';
             this.users.length = 0;
             this.usersService.getUser(event.target.value)
+                .pipe(takeUntil(this.ngUnsubscribe))
                 .subscribe((responseUser: Response) => {
                     if (responseUser['error'] === 0) {
                         this.users.push(responseUser);
@@ -169,7 +182,9 @@ export class UsersComponent implements OnInit {
             this.usersService.deleteUser({
                 type: 'id',
                 userid: id
-            }).subscribe((response: Response) => {
+            })
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe((response: Response) => {
                 if (response['error'] === 0) {
                     this.initialiseGrid();
                 } else {
@@ -207,10 +222,12 @@ export class UsersComponent implements OnInit {
         this.users.length = 0;
 
         this.fragmentsService.getFragment(id)
+            .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((fragment: Response) => {
                 if (fragment['error'] === 0) {
                     console.log(fragment);
                     this.usersService.getUser(fragment['ownerid'])
+                        .pipe(takeUntil(this.ngUnsubscribe))
                         .subscribe((responseUser: Response) => {
                             if (responseUser['error'] === 0) {
                                 this.users.push(responseUser);
@@ -229,8 +246,8 @@ export class UsersComponent implements OnInit {
             });
     }
 
-    public IgnoreDateFilters(event) {
-        this.usersService.ignoreDateFilters = !this.usersService.ignoreDateFilters;
+    public UseDateFilters() {
+        this.usersService.useDateFilters = !this.usersService.useDateFilters;
         this.initialiseGrid();
     }
 }

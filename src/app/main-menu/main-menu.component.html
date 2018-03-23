@@ -21,3 +21,10 @@
     <li>Splice: <span [ngClass]="({'with-param': userParamsService.searchSplice})">{{ userParamsService.searchSplice ? userParamsService.searchSplice : 'none' }}</span><span *ngIf="userParamsService.searchSplice" class="k-icon k-i-close-circle" (click)="userParamsService.clear();"></span></li>
   </ul>
 </div>
+<div class="navigation-link">
+  <div class="main-menu-title">Tools</div>
+  <ul>
+    <li><a routerLink="/register-user" routerLinkActive="active">Register users</a></li>
+    <li><a routerLink="/upload" routerLinkActive="active">Upload</a></li>
+  </ul>
+</div>

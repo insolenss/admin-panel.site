@@ -1,18 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { TagsService } from './tags.service';
 import { ErrorHandler } from '../error-handler';
 import { UserParamsService } from '../user-params.service';
 import { ActivatedRoute } from '@angular/router';
 import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { SortDescriptor } from '@progress/kendo-data-query/dist/es/main';
+import {Subject} from 'rxjs/Subject';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-tags',
   templateUrl: './tags.component.html',
   styleUrls: ['./tags.component.css']
 })
-export class TagsComponent implements OnInit {
+export class TagsComponent implements OnInit, OnDestroy {
 
+  private ngUnsubscribe = new Subject();
   constructor(
     public tagsService: TagsService,
     private errorHandler: ErrorHandler,
@@ -31,7 +34,15 @@ export class TagsComponent implements OnInit {
   public to: Date;
 
   ngOnInit() {
+    this.userParams.searchUserSubject
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((id: String) => this.initialiseGrid());
     this.initialiseGrid();
+  }
+
+  ngOnDestroy() {
+      this.ngUnsubscribe.next();
+      this.ngUnsubscribe.complete();
   }
 
   public initialiseGrid(): void {
@@ -41,31 +52,39 @@ export class TagsComponent implements OnInit {
     this.tags.length = 0;
     this.skip = (+(this.tagsService.findParam('page').value) - 1) * +(this.tagsService.findParam('pagesize').value);
 
-    this.tagsService.getTags()
-        .subscribe((response: Response) => {
-            console.log(response);
-            if (response['error'] === 0) {
-                this.total = response['count'];
-                for (const tag of response['tags']) {
-                    this.tagsService.getTag(tag)
-                        .subscribe((responseTag: Response) => {
-                            if (responseTag['error'] === 0) {
-                                console.log(responseTag);
-                                this.tags.push(responseTag['info']);
-                            } else {
-                                this.errorHandler.initError(responseTag['error'], responseTag['error_message']);
-                            }
-                        });
+    if (this.userParams.searchTag) {
+        const fakeEvent = {target: {value: this.userParams.searchTag}};
+        this.searchTagById(fakeEvent);
+    } else {
+        this.tagsService.getTags()
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((response: Response) => {
+                console.log(response);
+                if (response['error'] === 0) {
+                    this.total = response['count'];
+                    for (const tag of response['tags']) {
+                        this.tagsService.getTag(tag)
+                            .pipe(takeUntil(this.ngUnsubscribe))
+                            .subscribe((responseTag: Response) => {
+                                if (responseTag['error'] === 0) {
+                                    console.log(responseTag);
+                                    this.tags.push(responseTag['info']);
+                                } else {
+                                    this.errorHandler.initError(responseTag['error'], responseTag['error_message']);
+                                }
+                            });
+                    }
+                    this.gridView = {
+                        data: this.tags,
+                        total: response['count']
+                    };
+                } else {
+                    this.errorHandler.initError(response['error'], response['error_message']);
                 }
-                this.gridView = {
-                    data: this.tags,
-                    total: response['count']
-                };
-            } else {
-                this.errorHandler.initError(response['error'], response['error_message']);
-            }
-        });
+            });
     }
+
+  }
 
     public changeFrom(event) {
         this.tagsService.findParam('page').value = '1';
@@ -95,6 +114,29 @@ export class TagsComponent implements OnInit {
         this.sort = sort;
         this.tagsService.findParam('sorted').value = (sort[0].dir === 'asc' ? '' : '-') + sort[0].field;
         this.initialiseGrid();
+    }
+
+    public searchTagById(event) {
+        if (event.target.value !== '') {
+            this.tagsService.findParam('page').value = '1';
+            this.tags.length = 0;
+            this.tagsService.getTag(event.target.value)
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe((response: Response) => {
+                    console.log(response);
+                    if (response['error'] === 0) {
+                        this.tags.push(response['info']);
+                        this.gridView = {
+                            data: this.tags,
+                            total: this.tags.length
+                        };
+                    } else {
+                        this.errorHandler.initError(response['error'], response['error_message']);
+                    }
+                });
+        } else {
+            this.initialiseGrid();
+        }
     }
 
 }
