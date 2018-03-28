@@ -2,15 +2,16 @@
 <div>
   <div>
     <kendo-textbox-container floatingLabel="Login">
-      <input kendoTextBox ([ngModel])="login" />
+      <input kendoTextBox [(ngModel)]="login" (input)="validateForm()" />
     </kendo-textbox-container>
   </div>
   <div>
     <kendo-textbox-container floatingLabel="Password">
-      <input kendoTextBox ([ngModel])="password" />
+      <input kendoTextBox [(ngModel)]="password" (input)="validateForm()" />
     </kendo-textbox-container>
   </div>
   <div>
-    <button kendoButton (click)="registerUser()" [primary]="true" style="margin-top: 20px;">Register</button>
+    <button kendoButton (click)="registerUser()" [primary]="true" style="margin-top: 20px;" [disabled]="!isFormValid">Register</button>
   </div>
+  <p id="successRegister" style="color: green; display: none; margin-top: 10px;">Пользователь успешно добавлен!</p>
 </div>

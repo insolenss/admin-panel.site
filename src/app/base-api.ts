@@ -29,6 +29,7 @@ export class BaseApi {
         return this.http.get(this.generateUrl(url + '?' + requestString));
     }
 
+    // VideoGetter
     public getVideo(url: string, params: any = {}): Observable<any> {
         let requestString = '';
         for (const param of params) {
@@ -50,5 +51,9 @@ export class BaseApi {
         };
         // const options { headers: HttpHeaders, responseType: 'text',} = { headers: headers, responseType: "blob" };
         return this.http.get(this.generateUrl(url + '?' + requestString), options);
-      }
+    }
+
+    public postRegister(url: string = '', data: any = {}): Observable<any> {
+        return this.http.post(this.baseUrl + url, data);
+    }
 }

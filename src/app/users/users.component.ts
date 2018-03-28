@@ -1,9 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {UsersService} from './users.service';
 import { SortDescriptor, orderBy } from '@progress/kendo-data-query';
-import { trigger, style, transition, animate, keyframes, query, stagger } from '@angular/animations';
-
-import { State } from '@progress/kendo-data-query';
 
 import {
     GridDataResult,

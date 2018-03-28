@@ -1,3 +1,19 @@
-<p>
-  upload works!
-</p>
+<h1>Upload</h1>
+<hr />
+<div>
+  From
+  <kendo-dateinput
+    [format]="'dd.MM.yyyy HH:mm:ss'"
+    style="margin-right: 20px;"
+  ></kendo-dateinput>
+  To
+  <kendo-dateinput
+    [format]="'dd.MM.yyyy HH:mm:ss'"
+    style="margin-right: 20px;"
+  ></kendo-dateinput>
+  <button kendoButton (click)="addThread()" [primary]="true">Add thread</button>
+</div>
+<div class="threads">
+
+</div>
+<hr />

@@ -38,6 +38,8 @@ import {HandlesService} from './handles/handles.service';
 import { RegisterUserComponent } from './register-user/register-user.component';
 import { UploadComponent } from './upload/upload.component';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import {RegisterUserService} from './register-user/register-user.service';
+import {UploadService} from './upload/upload.service';
 
 
 const appRoutes: Routes = [
@@ -84,7 +86,23 @@ const appRoutes: Routes = [
     DateInputsModule,
     ButtonsModule
   ],
-  providers: [AuthService, AppGuard, UsersService, UserService, Helper, Locales, UserParamsService, ErrorHandler, FragmentsService, FragmentService, TagsService, SplicesService, HandlesService],
+  providers: [
+      AuthService,
+      AppGuard,
+      UsersService,
+      UserService,
+      Helper,
+      Locales,
+      UserParamsService,
+      ErrorHandler,
+      FragmentsService,
+      FragmentService,
+      TagsService,
+      SplicesService,
+      HandlesService,
+      RegisterUserService,
+      UploadService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
