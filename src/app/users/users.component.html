@@ -38,25 +38,25 @@
       <div class="row">
           <div class="col-md-3">
             <p style="font-weight: bold;">Use date filters</p>
-            <input type="checkbox" [checked]="useDateFilters" (change)="UseDateFilters()">
+            <input type="checkbox" [checked]="usersService.useDateFilters" (change)="UseDateFilters()">
           </div>
           <div class="col-md-3">
               <p style="font-weight: bold;">Last login from</p>
               <kendo-dateinput
-                      [format]="'dd.MM.yyyy HH:mm:ss'"
-                      [value]="last_login_from"
-                      [disabled]="!usersService.useDateFilters"
-                      (valueChange)="changeLastLoginFrom($event)"
+                  [format]="'dd.MM.yyyy HH:mm:ss'"
+                  [value]="last_login_from"
+                  [disabled]="!usersService.useDateFilters"
+                  (valueChange)="changeLastLoginFrom($event)"
               ></kendo-dateinput>
           </div>
           <div class="col-md-3">
               <p style="font-weight: bold;">Last login to</p>
               <kendo-dateinput
-                      [format]="'dd.MM.yyyy HH:mm:ss'"
-                      [value]="last_login_to"
-                      [disabled]="!usersService.useDateFilters"
-                      (valueChange)="changeLastLoginTo($event)"
-              ></kendo-dateinput>
+                  [format]="'dd.MM.yyyy HH:mm:ss'"
+                  [value]="last_login_to"
+                  [disabled]="!usersService.useDateFilters"
+                  (valueChange)="changeLastLoginTo($event)"
+          ></kendo-dateinput>
           </div>
       </div>
     </div>

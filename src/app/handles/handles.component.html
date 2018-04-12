@@ -24,11 +24,9 @@
           [pageSize]="handlesService.findParam('pagesize').value"
           [skip]="skip"
           [sortable]="true"
-          [sort]="sort"
           [pageable]="true"
           [scrollable]="'none'"
           (pageChange)="pageChange($event)"
-          (sortChange)="sortChange($event)"
   >
     <kendo-grid-column field="id" [sortable]="false"></kendo-grid-column>
     <kendo-grid-column><ng-template kendoGridCellTemplate let-dataItem></ng-template></kendo-grid-column>

@@ -3,17 +3,61 @@
 <div>
   From
   <kendo-dateinput
-    [format]="'dd.MM.yyyy HH:mm:ss'"
-    style="margin-right: 20px;"
+    [format]="'dd.MM.yyyy'"
+    [value]="this.from"
+    (valueChange)="changeFrom($event)"
+    style="margin-right: 20px; width: 100px;"
   ></kendo-dateinput>
   To
   <kendo-dateinput
-    [format]="'dd.MM.yyyy HH:mm:ss'"
-    style="margin-right: 20px;"
+    [format]="'dd.MM.yyyy'"
+    [value]="this.to"
+    (valueChange)="changeTo($event)"
+    style="margin-right: 20px; width: 100px;"
   ></kendo-dateinput>
-  <button kendoButton (click)="addThread()" [primary]="true">Add thread</button>
-</div>
-<div class="threads">
-
+  <button kendoButton (click)="startThread()" [primary]="true">Add thread</button>
 </div>
 <hr />
+<table class="threads">
+  <thead>
+    <tr class="thread">
+      <td class="thread-id">Id</td>
+      <td class="thread-status">Status</td>
+      <td class="thread-progress">Progress</td>
+      <td class="thread-from">From</td>
+      <td class="thread-to">To</td>
+      <td class="thread-controls"></td>
+      <td class="thread-controls"></td>
+    </tr>
+  </thead>
+  <tbody class="thread" *ngFor="let thread of threads; trackBy: trackById" id="thread-{{ thread.id }}">
+    <tr>
+      <td class="thread-id">{{ thread.id }}</td>
+      <td class="thread-status">{{ thread.status }}</td>
+      <td class="thread-progress">{{ this.Math.floor(thread.uploaded / thread.all * 100) }}%</td>
+      <td class="thread-from">{{ thread.from }}</td>
+      <td class="thread-to">{{ thread.to }}</td>
+      <td class="thread-controls">
+        <div class="edit-icons">
+          <a href="javascript:void(0)">
+            <span class="k-icon k-i-stop" (click)="stopThread(thread.id)"></span>
+          </a>
+          <a href="javascript:void(0)">
+            <span class="k-icon k-i-reload" (click)="rerunThread(thread.id)"></span>
+          </a>
+          <a href="javascript:void(0)">
+            <span class="k-icon k-i-delete" (click)="deleteThread(thread.id)"></span>
+          </a>
+        </div>
+      </td>
+      <td class="thread-controls"><button type="button" (click)="showLogs(thread.id)">Show Logs</button></td>
+    </tr>
+    <tr class="thread-logs" id="thread-logs-{{ thread.id }}">
+      <td colspan="7">
+        <div>
+          <p *ngFor="let logRecord of thread.logs">{{ logRecord | json }}</p>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>

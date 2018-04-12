@@ -1,0 +1,70 @@
+.threads {
+    margin: 0;
+    width: 100%;
+    max-width: none;
+    border-collapse: separate;
+    border-spacing: 0;
+    empty-cells: show;
+    outline: 0;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+    background-color: transparent;
+    border: 1px solid rgba(0,0,0,.08);
+    table-layout: fixed;
+}
+
+.thread {
+    width: 100%;
+}
+
+.threads td,
+.threads th {
+    padding: 8px 12px;
+    border-style: solid;
+    outline: 0;
+    font-weight: inherit;
+    text-align: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-width: 0 0 1px 1px;
+    vertical-align: middle;
+    border-color: rgba(0,0,0,.08);
+}
+
+.threads td:first-child {
+    border-left-width: 0;
+    width: 320px;
+}
+
+.threads thead {
+    color: #656565;
+    background-color: #f6f6f6;
+}
+
+.threads tr {
+    border-color: inherit;
+}
+
+.thread-logs>td {
+    padding: 0;
+}
+
+.thread-logs>td>div {
+    color: #fff;
+    background-color: #000;
+    position: relative;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0;
+    transition: max-height .3s ease;
+}
+
+.thread-logs.opened>td>div {
+    max-height: 500px;
+    overflow: scroll;
+    padding: 8px 12px;
+}
+
+.thread-logs>td>div p {
+    width: 3000px;
+}
