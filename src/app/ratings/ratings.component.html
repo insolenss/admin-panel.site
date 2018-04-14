@@ -1,0 +1,36 @@
+<h1>Ratings</h1>
+<hr />
+<div class="row">
+  <div class="col-md-1 col-md-offset-11" style="text-align: right;">
+    <div class="form-group">
+      <label for="pagesize">Pagesize:</label>
+      <select class="form-control" id="pagesize" ([ngModel])="ratingsService.findParam('pagesize').value" (change)="pageSizeChange($event)">
+        <option [selected]="ratingsService.findParam('pagesize').value == '1'" [value]="1">1</option>
+        <option [selected]="ratingsService.findParam('pagesize').value == '5'" [value]="5">5</option>
+        <option [selected]="ratingsService.findParam('pagesize').value == '10'" [value]="10">10</option>
+        <option [selected]="ratingsService.findParam('pagesize').value == '20'" [value]="20">20</option>
+        <option [selected]="ratingsService.findParam('pagesize').value == '50'" [value]="50">50</option>
+        <option [selected]="ratingsService.findParam('pagesize').value == '100'" [value]="100">100</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="users-table table">
+  <kendo-grid
+          [data]="gridView"
+          [pageSize]="ratingsService.findParam('pagesize').value"
+          [skip]="skip"
+          [sortable]="true"
+          [sort]="sort"
+          [pageable]="true"
+          [scrollable]="'none'"
+          (pageChange)="pageChange($event)"
+  >
+    <kendo-grid-column field="id" [sortable]="false"></kendo-grid-column>
+    <kendo-grid-column field="userid" [sortable]="false" class="td-with-icon"><ng-template kendoGridCellTemplate let-dataItem>{{ dataItem.userid }}<span class="k-icon filter-icon icon-in-field" [ngClass]="{'k-i-filter': userParams.searchUser !== dataItem.userid, 'k-i-filter-clear': userParams.searchUser === dataItem.userid}" (click)="userParams.updateParam('user', dataItem.userid)"></span></ng-template></kendo-grid-column>
+    <kendo-grid-column field="rating" [sortable]="false"></kendo-grid-column>
+    <kendo-grid-column field="cdate" [sortable]="false"><ng-template kendoGridCellTemplate let-dataItem>{{dataItem.cdate * 1000  | date:'dd.MM.yyyy HH:mm:ss'}}</ng-template></kendo-grid-column>
+    <kendo-grid-column field="text" [sortable]="false"></kendo-grid-column>
+    <kendo-grid-column><ng-template kendoGridCellTemplate let-dataItem><div class="edit-icons"><a *ngIf="userParams.isAdmin()" href="javascript:void(0)"><span class="k-icon k-i-delete" (click)="deleteRating(dataItem.id)"></span></a></div></ng-template></kendo-grid-column>
+  </kendo-grid>
+</div>
