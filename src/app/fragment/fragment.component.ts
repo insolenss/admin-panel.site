@@ -26,7 +26,8 @@ export class FragmentComponent implements OnInit {
 
   public isEdit = false;
 
-  constructor(public fragmentService: FragmentService,
+  constructor(
+    public fragmentService: FragmentService,
     private errorHandler: ErrorHandler,
     public userParamsService: UserParamsService,
     public fragmentsService: FragmentsService,
@@ -77,6 +78,7 @@ export class FragmentComponent implements OnInit {
 
   public closeModal() {
     this.fragmentsService.fragmentModalOpened = false;
+    this.router.navigate(['fragments/']);
   }
 
   public saveAttributes() {

@@ -1,3 +1,24 @@
-<p>
-  splice works!
-</p>
+<div class="splice-modal" *ngIf="splice">
+  <div class="k-icon k-i-delete modal-delete" (click)="deleteSplice(fragment.id)"></div>
+  <div class="k-icon filter-icon" [ngClass]="{'k-i-filter': userParamsService.searchSplice !== splice.id, 'k-i-filter-clear': userParamsService.searchSplice === splice.id}" (click)="userParamsService.updateParam('splice', splice.id)"></div>
+  <div class="k-icon k-i-close close-modal" (click)="closeModal();"></div>
+  <div class="row">
+    <div class="col-md-6">
+      <div id="video-wrapper"></div>
+    </div>
+    <div class="col-md-6">
+      <p class="title">{{ splice?.name }}</p>
+      <hr />
+      <div class="splice-status">
+        <p><span class="title">Status: </span>{{ splice?.status }}</p>
+        <button type="button" class="btn btn-success" *ngIf="!splice?.status || !splice?.status.includes('global')" (click)="makeGlobal(true);">Add global status</button>
+        <button type="button" class="btn btn-warning" *ngIf="splice?.status && splice?.status.includes('global')" (click)="makeGlobal(false);">Remove global status</button>
+      </div>
+      <hr />
+      <div class="splice-fragments">
+        <p class="title">Splice fragments:</p>
+        <p class="td-with-icon" *ngFor="let src of splice?.source">{{ src.text }} - {{ src.fragid }}<span class="k-icon filter-icon icon-in-field" [ngClass]="{'k-i-filter': userParamsService.searchFragment !== src.fragid, 'k-i-filter-clear': userParamsService.searchFragment === src.fragid}" (click)="userParamsService.updateParam('fragment', src.fragid)"></span></p>
+      </div>
+    </div>
+  </div>
+</div>

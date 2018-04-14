@@ -4,7 +4,7 @@ import {UserParamsService} from '../user-params.service';
 import {SortDescriptor} from '@progress/kendo-data-query';
 import {GridDataResult, PageChangeEvent} from '@progress/kendo-angular-grid';
 import {SplicesService} from './splices.service';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Subject} from 'rxjs/Subject';
 import {takeUntil} from 'rxjs/operators';
 
@@ -21,7 +21,8 @@ export class SplicesComponent implements OnInit, OnDestroy {
       public splicesService: SplicesService,
       private errorHandler: ErrorHandler,
       public userParams: UserParamsService,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private router: Router
   ) { }
 
   public splices = [];
@@ -31,7 +32,7 @@ export class SplicesComponent implements OnInit, OnDestroy {
   public total = 0;
   public sort: SortDescriptor[] = [];
 
-  public editedSpliceId = this.route.params['value'].editedSpliceId ? this.route.params['value'].editedSplicetId : '';
+  public editedSpliceId = this.route.params['value'].editedSpliceId ? this.route.params['value'].editedSpliceId : '';
 
   public from: Date;
   public to: Date;
@@ -51,7 +52,7 @@ export class SplicesComponent implements OnInit, OnDestroy {
 
   public initialiseGrid(): void {
 
-      if (this.route.params['value'].editedFragmentId) {
+      if (this.route.params['value'].editedSpliceId) {
           this.splicesService.spliceModalOpened = true;
       }
 
@@ -67,16 +68,16 @@ export class SplicesComponent implements OnInit, OnDestroy {
               this.splicesService.findParam('ownerid').value = this.userParams.searchUser;
           }
           if (this.userParams.searchFragment) {
-              const fakeEvent = {target: {value: this.userParams.searchFragment}};
-              // this.searchFragmentsById(fakeEvent);
+              this.splicesService.findParam('page').value = '1';
+              this.splicesService.findParam('fragid').value = this.userParams.searchUser;
           }
           if (this.userParams.searchTag) {
               this.splicesService.findParam('page').value = '1';
-              // this.fragmentsService.findParam('tagid').value = this.userParams.searchTag;
+              this.splicesService.findParam('tagid').value = this.userParams.searchUser;
           }
           if (this.userParams.searchSplice) {
               const fakeEvent = {target: {value: this.userParams.searchSplice}};
-              // this.searchFragmentsById(fakeEvent);
+              this.searchSplicesById(fakeEvent);
           }
       }
       this.splicesService.getSplices()
@@ -110,12 +111,125 @@ export class SplicesComponent implements OnInit, OnDestroy {
   public reInitialiseGrid() {
       this.splicesService.findParam('ownerid').value = '';
       this.splicesService.findParam('tagid').value = '';
-      if (this.userParams.searchFragment) {
-          const fakeEvent = {target: {value: this.userParams.searchFragment}};
-          // this.searchFragmentsById(fakeEvent);
+      this.splicesService.findParam('fragid').value = '';
+      if (this.userParams.searchFragment || this.userParams.searchUser || this.userParams.searchTag || this.userParams.searchSplice) {
+          if (this.userParams.searchUser) {
+              this.splicesService.findParam('page').value = '1';
+              this.splicesService.findParam('ownerid').value = this.userParams.searchUser;
+              this.initialiseGrid();
+          }
+          if (this.userParams.searchFragment) {
+              this.splicesService.findParam('page').value = '1';
+              this.splicesService.findParam('fragid').value = this.userParams.searchUser;
+              this.initialiseGrid();
+          }
+          if (this.userParams.searchTag) {
+              this.splicesService.findParam('page').value = '1';
+              this.splicesService.findParam('tagid').value = this.userParams.searchUser;
+              this.initialiseGrid();
+          }
+          if (this.userParams.searchSplice) {
+              const fakeEvent = {target: {value: this.userParams.searchSplice}};
+              this.searchSplicesById(fakeEvent);
+          }
       } else {
           this.initialiseGrid();
       }
   }
+
+    public searchSplicesById(event) {
+        if (event.target.value !== '') {
+            this.splices.length = 0;
+            this.splicesService.getSplice(event.target.value)
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe((responseSplice: Response) => {
+                    if (responseSplice['error'] === 0) {
+                        this.splices.push(responseSplice);
+                    } else {
+                        this.errorHandler.initError(responseSplice['error'], responseSplice['error_message']);
+                    }
+                });
+            this.gridView = {
+                data: this.splices,
+                total: this.splices.length
+            };
+        } else {
+            this.initialiseGrid();
+        }
+    }
+
+    public searchSplicesByOwnerId(event) {
+        this.splicesService.findParam('page').value = '1';
+        this.splicesService.findParam('ownerid').value = event.target.value;
+        this.initialiseGrid();
+    }
+
+    public searchSplicesByTagId(event) {
+        this.splicesService.findParam('page').value = '1';
+        this.splicesService.findParam('tagid').value = event.target.value;
+        this.initialiseGrid();
+    }
+
+    public searchSplicesByFragId(event) {
+        this.splicesService.findParam('page').value = '1';
+        this.splicesService.findParam('fragid').value = event.target.value;
+        this.initialiseGrid();
+    }
+
+    public changeFrom(event) {
+        this.splicesService.findParam('page').value = '1';
+        this.splicesService.findParam('from').value = (event.getTime() / 1000).toString();
+        this.initialiseGrid();
+    }
+
+    public changeTo(event) {
+        this.splicesService.findParam('page').value = '1';
+        this.splicesService.findParam('to').value = (event.getTime() / 1000).toString();
+        this.initialiseGrid();
+    }
+
+    public statusChange(event) {
+        this.splicesService.findParam('page').value = '1';
+        this.splicesService.findParam('status').value = event.join();
+        this.initialiseGrid();
+    }
+
+    public pageChange(state: PageChangeEvent): void {
+        this.splicesService.findParam('page').value = (state.skip / Number(this.splicesService.findParam('pagesize').value) + 1).toString();
+        this.initialiseGrid();
+    }
+
+    public pageSizeChange(event) {
+        this.splicesService.findParam('page').value = '1';
+        this.splicesService.findParam('pagesize').value = event.target.value;
+        this.initialiseGrid();
+    }
+
+    public sortChange(sort: SortDescriptor[]): void {
+        this.splicesService.findParam('page').value = '1';
+        this.sort = sort;
+        this.splicesService.findParam('sorted').value = (sort[0].dir === 'asc' ? '' : '-') + sort[0].field;
+        this.initialiseGrid();
+    }
+
+    public deleteSplice(id) {
+        if (confirm('Are you really want to delete splice? (id = ' + id + ')')) {
+            this.splicesService.deleteSplice({id: id})
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe((response: Response) => {
+                    if (response['error'] === 0) {
+                        this.initialiseGrid();
+                    } else {
+                        this.errorHandler.initError(response['error'], response['error_message']);
+                    }
+                });
+        }
+    }
+
+    public editSplice(id) {
+        this.splicesService.spliceModalOpened = true;
+        this.editedSpliceId = id;
+        this.router.navigate(['splices/' + id]);
+    }
 
 }

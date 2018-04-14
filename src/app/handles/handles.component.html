@@ -28,7 +28,40 @@
           [scrollable]="'none'"
           (pageChange)="pageChange($event)"
   >
-    <kendo-grid-column field="id" [sortable]="false"></kendo-grid-column>
-    <kendo-grid-column><ng-template kendoGridCellTemplate let-dataItem></ng-template></kendo-grid-column>
+    <kendo-grid-column field="userid" [sortable]="false" class="td-with-icon">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.userid }}<span class="k-icon filter-icon icon-in-field" [ngClass]="{'k-i-filter': userParams.searchUser !== dataItem.userid, 'k-i-filter-clear': userParams.searchUser === dataItem.userid}" (click)="userParams.updateParam('user', dataItem.userid)"></span>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="handleType" [sortable]="false"></kendo-grid-column>
+    <kendo-grid-column field="handleCause" [sortable]="false"></kendo-grid-column>
+    <kendo-grid-column field="sourceType" [sortable]="false"></kendo-grid-column>
+    <kendo-grid-column field="sourceId" [sortable]="false" class="td-with-icon">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.sourceId }}<span *ngIf="dataItem.sourceType === 'fragment'" class="k-icon filter-icon icon-in-field" [ngClass]="{'k-i-filter': userParams.searchFragment !== dataItem.sourceId, 'k-i-filter-clear': userParams.searchFragment === dataItem.sourceId}" (click)="userParams.updateParam('fragment', dataItem.sourceId)"></span>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="text" [sortable]="false"></kendo-grid-column>
+    <kendo-grid-column><ng-template kendoGridCellTemplate let-dataItem><div class="edit-icons"><a *ngIf="userParams.isModerator() || userParams.isAdmin()" href="javascript:void(0)"><span class="k-icon k-i-edit" (click)="showFeedbackForm(dataItem)"></span></a></div></ng-template></kendo-grid-column>
   </kendo-grid>
+</div>
+<div class="feedback-form" id="feedback-form">
+  <div class="k-icon k-i-close close-modal" (click)="closeFeedbackForm();"></div>
+  <div>
+    <label for="users-handle-text">User's handle text:</label>
+    <textarea id="users-handle-text" data-userid="" data-handleid="" disabled></textarea>
+  </div>
+  <hr />
+  <div>
+    <label for="feedback">Enter feedback:</label>
+    <textarea id="feedback"></textarea>
+  </div>
+  <div style="margin-top: 20px;">
+    <label></label>
+    <button class="btn btn-success" data-userid="" data-handleid="" id="feedback-send-button" (click)="sendFeedback($event)">Send feedback</button>
+  </div>
+  <div style="margin-top: 20px;">
+    <label></label>
+    <p id="send-success" style="display: none; color: green; font-size: 18px;">Feedback successfully sent!</p>
+  </div>
 </div>

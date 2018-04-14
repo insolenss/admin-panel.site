@@ -49,19 +49,20 @@ export class UploadComponent implements OnInit, OnDestroy {
                       .subscribe((responseThread: Response) => {
                           if (responseThread['error'] === 0) {
                               const threadFromResponse = responseThread['thread'];
-                              this.uploadService.getThreadLogs(thread)
-                                  .subscribe((responseThreadLogs: Response) => {
-                                      if (responseThreadLogs['error'] === 0) {
-                                          console.log(responseThreadLogs);
-                                          threadFromResponse['logs'] = responseThreadLogs['logs'];
-                                      } else {
-                                          this.errorHandler.initError(responseThreadLogs['error'], responseThreadLogs['error_message']);
-                                      }
-                                  });
+                              // this.uploadService.getThreadLogs(thread)
+                              //     .subscribe((responseThreadLogs: Response) => {
+                              //         if (responseThreadLogs['error'] === 0) {
+                              //             console.log(responseThreadLogs);
+                              //             threadFromResponse['logs'] = responseThreadLogs['logs'];
+                              //         } else {
+                              //             this.errorHandler.initError(responseThreadLogs['error'], responseThreadLogs['error_message']);
+                              //         }
+                              //     });
+                              threadFromResponse['logs'] = [];
                               threadFromResponse.opened = false;
                               this.threads.push(threadFromResponse);
                               const threadIndex = this.threads.length - 1;
-                              if (responseThread['thread']['status'] !== 'COMPLITED' && responseThread['thread']['status'] !== 'DEATH' && responseThread['thread']['status'] !== 'STOPED') {
+                                  if (responseThread['thread']['status'] !== 'COMPLITED' && responseThread['thread']['status'] !== 'DEATH' && responseThread['thread']['status'] !== 'STOPED' && responseThread['thread']['status'] !== 'NEED_STOP') {
                                   this.seekThread(threadFromResponse.id, threadIndex);
                               }
                           } else {
@@ -90,19 +91,19 @@ export class UploadComponent implements OnInit, OnDestroy {
                   .subscribe((responseThread: Response) => {
                       if (responseThread['error'] === 0) {
                           const threadFromResponse = responseThread['thread'];
-                          this.uploadService.getThreadLogs(thread)
-                              .subscribe((responseThreadLogs: Response) => {
-                                  if (responseThreadLogs['error'] === 0) {
-                                      console.log(responseThreadLogs);
-                                      threadFromResponse['logs'] = responseThreadLogs['logs'];
-                                  } else {
-                                      this.errorHandler.initError(responseThreadLogs['error'], responseThreadLogs['error_message']);
-                                  }
-                              });
+                          // this.uploadService.getThreadLogs(thread)
+                          //     .subscribe((responseThreadLogs: Response) => {
+                          //         if (responseThreadLogs['error'] === 0) {
+                          //             console.log(responseThreadLogs);
+                          //             threadFromResponse['logs'] = responseThreadLogs['logs'];
+                          //         } else {
+                          //             this.errorHandler.initError(responseThreadLogs['error'], responseThreadLogs['error_message']);
+                          //         }
+                          //     });
                           threadFromResponse.opened = false;
                           this.threads.push(threadFromResponse);
                           const threadIndex = this.threads.length - 1;
-                          if (responseThread['thread']['status'] !== 'COMPLITED' && responseThread['thread']['status'] !== 'DEATH' && responseThread['thread']['status'] !== 'STOPED') {
+                          if (responseThread['thread']['status'] !== 'COMPLITED' && responseThread['thread']['status'] !== 'DEATH' && responseThread['thread']['status'] !== 'STOPED' && responseThread['thread']['status'] !== 'NEED_STOP') {
                               this.seekThread(threadFromResponse.id, threadIndex);
                           }
                       } else {
@@ -138,33 +139,37 @@ export class UploadComponent implements OnInit, OnDestroy {
               .subscribe((responseThread: Response) => {
                   console.log(responseThread);
                   if (responseThread['error'] === 0) {
-                      const threadFromResponse = responseThread['thread'];
-                      context.uploadService.getThreadLogs(id)
-                          .subscribe((responseThreadLogs: Response) => {
-                              if (responseThreadLogs['error'] === 0) {
-                                  console.log(responseThreadLogs);
-                                  threadFromResponse['logs'] = responseThreadLogs['logs'];
-                                  // const newLogs = '<p>' + threadFromResponse['logs'].join('</p><p>') + '</p>';
-                                  let newLogs = responseThreadLogs['logs'];
-                                  if (responseThreadLogs['count'] <= responseThreadLogs['logs'].length) {
-                                      newLogs = responseThreadLogs['logs'].map(function (logRecord) {
-                                          return '<p>' + JSON.stringify(logRecord) + '</p>';
-                                      });
-                                  } else {
-                                      newLogs = context.getThreadLogs(id, 2, newLogs).map(function (logRecord) {
-                                          return '<p>' + JSON.stringify(logRecord) + '</p>';
-                                      });
-                                  }
-                                  newLogs = newLogs.join('');
-                                  console.log(newLogs);
-
-                                  const logDiv = document.getElementById('thread-logs-' + id).querySelector('div');
-                                  logDiv.innerHTML = newLogs;
-                                  logDiv.scrollTop = logDiv.scrollHeight;
-                              } else {
-                                  context.errorHandler.initError(responseThreadLogs['error'], responseThreadLogs['error_message']);
-                              }
-                          });
+                      // const threadFromResponse = responseThread['thread'];
+                      // context.uploadService.getThreadLogs(id)
+                      //     .subscribe((responseThreadLogs: Response) => {
+                      //         if (responseThreadLogs['error'] === 0) {
+                      //             console.log(responseThreadLogs);
+                      //             threadFromResponse['logs'] = responseThreadLogs['logs'];
+                      //             // const newLogs = '<p>' + threadFromResponse['logs'].join('</p><p>') + '</p>';
+                      //             let newLogs = responseThreadLogs['logs'];
+                      //             if (responseThreadLogs['count'] <= responseThreadLogs['logs'].length) {
+                      //                 newLogs = responseThreadLogs['logs'].map(function (logRecord) {
+                      //                     return '<p>' + JSON.stringify(logRecord) + '</p>';
+                      //                 });
+                      //             } else {
+                      //                 const recursiveLogs = context.getThreadLogs(id, 2, newLogs);
+                      //                 console.log('===========================');
+                      //                 console.log(recursiveLogs);
+                      //
+                      //                 newLogs = recursiveLogs.map(function (logRecord) {
+                      //                     return '<p>' + JSON.stringify(logRecord) + '</p>';
+                      //                 });
+                      //             }
+                      //             newLogs = newLogs.join('');
+                      //             console.log(newLogs);
+                      //
+                      //             const logDiv = document.getElementById('thread-logs-' + id).querySelector('div');
+                      //             logDiv.innerHTML = newLogs;
+                      //             logDiv.scrollTop = logDiv.scrollHeight;
+                      //         } else {
+                      //             context.errorHandler.initError(responseThreadLogs['error'], responseThreadLogs['error_message']);
+                      //         }
+                      //     });
                       // context.threads[index] = threadFromResponse;
                       const currentStatus = document.querySelector('#thread-' + id + ' .thread-status').innerHTML;
                       if (responseThread['thread']['status'] !== currentStatus) {
@@ -173,7 +178,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
                       document.getElementById('thread-' + id).querySelector('.thread-progress').innerHTML = Math.floor(responseThread['thread']['uploaded'] / responseThread['thread']['all'] * 100) + '%';
 
-                      if (responseThread['thread']['status'] === 'COMPLITED' || responseThread['thread']['status'] === 'DEATH' || responseThread['thread']['status'] === 'STOPED') {
+                      if (responseThread['thread']['status'] === 'COMPLITED' || responseThread['thread']['status'] === 'DEATH' || responseThread['thread']['status'] === 'STOPED' || responseThread['thread']['status'] === 'NEED_STOP') {
                           clearTimeout(timer);
                       }
                   } else {
@@ -189,15 +194,58 @@ export class UploadComponent implements OnInit, OnDestroy {
       this.uploadService.getThreadLogs(id, page)
           .subscribe((responseThreadLogs: Response) => {
               if (responseThreadLogs['error'] === 0) {
-                  console.log(responseThreadLogs);
                   logs = logs.concat(responseThreadLogs['logs']);
                   if (responseThreadLogs['count'] > logs.length) {
                       this.getThreadLogs(id, page + 1, logs);
                   } else {
                       return logs;
                   }
-                }
-            });
+              }
+          });
+  }
+
+  public getAllThreadLogs(id) {
+      let logs = [];
+      const statuses = [];
+      const statusButtons = document.getElementById('log-statuses').querySelectorAll('button.k-state-active');
+      console.log(statusButtons);
+      if (statusButtons.length) {
+          for (let i = 0; i <= statusButtons.length - 1; i++) {
+              statuses.push(statusButtons[i].innerHTML);
+          }
+      }
+      this.uploadService.getThreadLogs(id, 1, statuses)
+          .subscribe((responseThreadLogs: Response) => {
+              if (responseThreadLogs['error'] === 0) {
+                  logs = logs.concat(responseThreadLogs['logs']);
+                  if (responseThreadLogs['count'] > logs.length) {
+                      const pages = Math.ceil(responseThreadLogs['count'] / 1000);
+                      for (let i = 2; i <= pages; i++) {
+                          this.uploadService.getThreadLogs(id, i, statuses)
+                              .subscribe((responseThreadLogs2: Response) => {
+                                  if (responseThreadLogs2['error'] === 0) {
+                                      logs = logs.concat(responseThreadLogs2['logs']);
+                                      if (i === pages) {
+                                          const newLogs = logs.map(function (logRecord) {
+                                              return '<p>' + JSON.stringify(logRecord) + '</p>';
+                                          });
+                                          const logDiv = document.getElementById('thread-logs-' + id).querySelector('div');
+                                          logDiv.innerHTML = logs.length ? newLogs.join('') : 'NO RECORDS';
+                                          logDiv.scrollTop = logDiv.scrollHeight;
+                                      }
+                                  }
+                              });
+                      }
+                  } else {
+                      const newLogs = logs.map(function (logRecord) {
+                          return '<p>' + JSON.stringify(logRecord) + '</p>';
+                      });
+                      const logDiv = document.getElementById('thread-logs-' + id).querySelector('div');
+                      logDiv.innerHTML = logs.length ? newLogs.join('') : 'NO RECORDS';
+                      logDiv.scrollTop = logDiv.scrollHeight;
+                  }
+              }
+          });
   }
 
   public changeFrom(e) {
@@ -216,6 +264,12 @@ export class UploadComponent implements OnInit, OnDestroy {
   public showLogs(id) {
     document.getElementById('thread-logs-' + id).classList.toggle('opened');
     document.getElementById('thread-' + id).querySelector('button').innerText = (document.getElementById('thread-' + id).querySelector('button').innerText === 'Show Logs') ? 'Hide Logs' : 'Show Logs';
+    if (document.getElementById('thread-logs-' + id).classList.contains('opened')) {
+        this.getAllThreadLogs(id);
+    } else {
+        const logDiv = document.getElementById('thread-logs-' + id).querySelector('div');
+        logDiv.innerHTML = '';
+    }
   }
 
   public rerunThread(id) {
@@ -243,6 +297,16 @@ export class UploadComponent implements OnInit, OnDestroy {
                       this.errorHandler.initError(response['error'], response['error_message']);
                   }
               });
+      }
+  }
+
+  public refreshLogs(e) {
+      e.target.classList.toggle('k-state-active');
+      const openedLogs = document.querySelectorAll('.thread-logs.opened');
+      if (openedLogs.length) {
+          for (let i = 0; i <= openedLogs.length - 1; i++) {
+              this.getAllThreadLogs(openedLogs[i].getAttribute('data-thread-id'));
+          }
       }
   }
 }

@@ -1,0 +1,25 @@
+.feedback-form {
+    position: absolute;
+    left: 300px;
+    right: 0;
+    top: 0;
+    height: 100%;
+    background-color: #fff;
+    z-index: 10;
+    padding: 54px;
+    display: none;
+}
+
+.feedback-form label {
+    display: inline-block;
+    width: 300px;
+    vertical-align: top;
+}
+
+.feedback-form textarea {
+    resize: none;
+    width: 300px;
+    height: 200px;
+    display: inline-block;
+    vertical-align: top;
+}

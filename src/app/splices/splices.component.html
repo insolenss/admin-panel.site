@@ -1,3 +1,91 @@
-<p>
-  splices works!
-</p>
+<h1>Splices</h1>
+<hr />
+<div class="form-constrols row">
+  <div class="col-md-4">
+    <div class="form-group">
+      <label for="id-search">Search by id:</label>
+      <input type="text" class="form-control" id="id-search" (input)="searchSplicesById($event)">
+    </div>
+    <div class="form-group">
+      <label for="ownerid-search">Search by ownerid:</label>
+      <input type="text" class="form-control" id="ownerid-search" (input)="searchSplicesByOwnerId($event)">
+    </div>
+    <div class="form-group">
+      <label for="tagid-search">Search by tagid:</label>
+      <input type="text" class="form-control" id="tagid-search" (input)="searchSplicesByTagId($event)">
+    </div>
+    <div class="form-group">
+      <label for="tagid-search">Search by fragid:</label>
+      <input type="text" class="form-control" id="fragid-search" (input)="searchSplicesByFragId($event)">
+    </div>
+  </div>
+  <div class="col-md-7 col-md-offset-1">
+    <div class="form-group">
+      <p style="font-weight: bold;">Status</p>
+      <kendo-multiselect [data]="['public', 'global', 'failed']"
+                         [filterable]="false"
+                         [value]="splicesService.findParam('status').value.split(',')"
+                         (valueChange)="statusChange($event)"
+      >
+      </kendo-multiselect>
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-3">
+          <p style="font-weight: bold;">Create date from</p>
+          <kendo-dateinput
+                  [format]="'dd.MM.yyyy HH:mm:ss'"
+                  [value]="from"
+                  (valueChange)="changeFrom($event)"
+          ></kendo-dateinput>
+        </div>
+        <div class="col-md-3">
+          <p style="font-weight: bold;">Create date to</p>
+          <kendo-dateinput
+                  [format]="'dd.MM.yyyy HH:mm:ss'"
+                  [value]="to"
+                  (valueChange)="changeTo($event)"
+          ></kendo-dateinput>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-1 col-md-offset-11" style="text-align: right;">
+    <div class="form-group">
+      <label for="pagesize">Pagesize:</label>
+      <select class="form-control" id="pagesize" ([ngModel])="splicesService.findParam('pagesize').value" (change)="pageSizeChange($event)">
+        <option [selected]="splicesService.findParam('pagesize').value == '1'" [value]="1">1</option>
+        <option [selected]="splicesService.findParam('pagesize').value == '5'" [value]="5">5</option>
+        <option [selected]="splicesService.findParam('pagesize').value == '10'" [value]="10">10</option>
+        <option [selected]="splicesService.findParam('pagesize').value == '20'" [value]="20">20</option>
+        <option [selected]="splicesService.findParam('pagesize').value == '50'" [value]="50">50</option>
+        <option [selected]="splicesService.findParam('pagesize').value == '100'" [value]="100">100</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="users-table table">
+  <kendo-grid
+          [data]="gridView"
+          [pageSize]="splicesService.findParam('pagesize').value"
+          [skip]="skip"
+          [sortable]="true"
+          [sort]="sort"
+          [pageable]="true"
+          [scrollable]="'none'"
+          (pageChange)="pageChange($event)"
+          (sortChange)="sortChange($event)"
+  >
+    <kendo-grid-column field="id" [sortable]="false" class="td-with-icon"><ng-template kendoGridCellTemplate let-dataItem>{{ dataItem.id }}<span class="k-icon filter-icon icon-in-field" [ngClass]="{'k-i-filter': userParams.searchSplice !== dataItem.id, 'k-i-filter-clear': userParams.searchSplice === dataItem.id}" (click)="userParams.updateParam('splice', dataItem.id)"></span></ng-template></kendo-grid-column>
+    <kendo-grid-column field="ownerid" [sortable]="false" class="td-with-icon"><ng-template kendoGridCellTemplate let-dataItem>{{ dataItem.ownerid }}<span class="k-icon filter-icon icon-in-field" [ngClass]="{'k-i-filter': userParams.searchUser !== dataItem.ownerid, 'k-i-filter-clear': userParams.searchUser === dataItem.ownerid}" (click)="userParams.updateParam('user', dataItem.ownerid)"></span></ng-template></kendo-grid-column>
+    <kendo-grid-column field="text" [sortable]="false"></kendo-grid-column>
+    <kendo-grid-column field="cdate"><ng-template kendoGridCellTemplate let-dataItem>{{dataItem.cdate * 1000  | date:'dd.MM.yyyy HH:mm:ss'}}</ng-template></kendo-grid-column>
+    <kendo-grid-column field="length_sec" [sortable]="false"></kendo-grid-column>
+    <kendo-grid-column field="name" [sortable]="false"></kendo-grid-column>
+    <kendo-grid-column field="subtitles"></kendo-grid-column>
+    <kendo-grid-column><ng-template kendoGridCellTemplate let-dataItem><div class="edit-icons"><a href="javascript:void(0)"><span class="k-icon k-i-edit" (click)="editSplice(dataItem.id)"></span></a><a *ngIf="userParams.isAdmin()" href="javascript:void(0)"><span class="k-icon k-i-delete" (click)="deleteSplice(dataItem.id)"></span></a></div></ng-template></kendo-grid-column>
+  </kendo-grid>
+</div>
+<app-splice *ngIf="splicesService.spliceModalOpened" [id]="editedSpliceId"></app-splice>

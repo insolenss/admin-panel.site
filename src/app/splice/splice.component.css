@@ -1,0 +1,25 @@
+.splice-modal {
+    position: absolute;
+    left: 300px;
+    right: 0;
+    top: 0;
+    height: 100%;
+    background-color: #fff;
+    z-index: 10;
+    padding: 54px;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.splice-fragments p + p {
+    margin-top: 20px;
+}
+
+.splice-fragments .icon-in-field {
+    font-size: 22px !important;
+    float: none !important;
+    margin-left: 20px;
+}

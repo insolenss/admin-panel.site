@@ -40,6 +40,9 @@ import { UploadComponent } from './upload/upload.component';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import {RegisterUserService} from './register-user/register-user.service';
 import {UploadService} from './upload/upload.service';
+import {SpliceService} from './splice/splice.service';
+import { RatingsComponent } from './ratings/ratings.component';
+import {RatingsService} from './ratings/ratings.service';
 
 
 const appRoutes: Routes = [
@@ -51,6 +54,7 @@ const appRoutes: Routes = [
     { path: 'splices', component: SplicesComponent, canActivate: [AppGuard] },
     { path: 'splices/:editedSpliceId', component: SplicesComponent, canActivate: [AppGuard] },
     { path: 'tags', component: TagsComponent, canActivate: [AppGuard] },
+    { path: 'ratings', component: RatingsComponent, canActivate: [AppGuard] },
     { path: 'handles', component: HandlesComponent, canActivate: [AppGuard] },
     { path: 'register-user', component: RegisterUserComponent, canActivate: [AppGuard] },
     { path: 'upload', component: UploadComponent, canActivate: [AppGuard] },
@@ -71,7 +75,8 @@ const appRoutes: Routes = [
     SpliceComponent,
     HandlesComponent,
     RegisterUserComponent,
-    UploadComponent
+    UploadComponent,
+    RatingsComponent
   ],
   imports: [
     BrowserModule,
@@ -101,7 +106,9 @@ const appRoutes: Routes = [
       SplicesService,
       HandlesService,
       RegisterUserService,
-      UploadService
+      UploadService,
+      SpliceService,
+      RatingsService
   ],
   bootstrap: [AppComponent]
 })

@@ -22,8 +22,25 @@ export class UploadService extends BaseApi {
         return this.get('/upload/info', [{title: 'id', value: id}]);
     }
 
-    public getThreadLogs(id, page = 1) {
-        return this.get('/upload/logs', [{title: 'id', value: id}, {title: 'pagesize', value: 1000}, {title: 'page', value: page}]);
+    public getThreadLogs(id, page = 1, statuses = []) {
+        const data = [{
+            title: 'id',
+            value: id
+        }, {
+            title: 'pagesize',
+            value: 1000
+        }, {
+            title: 'page',
+            value: page
+        }];
+        if (statuses.length) {
+            const obj = {
+                title: 'status',
+                value: statuses.join(',')
+            };
+            data.push(obj);
+        }
+        return this.get('/upload/logs', data);
     }
 
     public startThread(data) {

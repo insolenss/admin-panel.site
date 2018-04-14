@@ -22,6 +22,14 @@ export class HandlesService extends BaseApi {
         return this.get('/user/handle/recent', this.filters);
     }
 
+    getHandleCauses() {
+        return this.get('/user/handle/abuse/causes', []);
+    }
+
+    sendFeedback(data) {
+        return this.post('/user/handle/feedback', data);
+    }
+
     findParam(name) {
         return this.filters.find(param => param.title === name);
     }

@@ -16,6 +16,10 @@ export class UserParamsService {
         return localStorage.getItem('access_level') === 'admin';
     }
 
+    public isModerator() {
+        return localStorage.getItem('access_level') === 'moderator';
+    }
+
     public setAccessLevel(accessLevel) {
         localStorage.setItem('access_level', accessLevel);
     }

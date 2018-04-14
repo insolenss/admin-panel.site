@@ -4,7 +4,7 @@ import {UserParamsService} from '../user-params.service';
 import {SortDescriptor} from '@progress/kendo-data-query';
 import {GridDataResult, PageChangeEvent} from '@progress/kendo-angular-grid';
 import {FragmentsService} from './fragments.service';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Subject} from 'rxjs/Subject';
 import {takeUntil} from 'rxjs/operators';
 
@@ -21,7 +21,8 @@ export class FragmentsComponent implements OnInit, OnDestroy {
       public fragmentsService: FragmentsService,
       private errorHandler: ErrorHandler,
       public userParams: UserParamsService,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private router: Router
   ) { }
 
     public fragments = [];
@@ -207,6 +208,7 @@ export class FragmentsComponent implements OnInit, OnDestroy {
     public editFragment(id) {
         this.fragmentsService.fragmentModalOpened = true;
         this.editedFragmentId = id;
+        this.router.navigate(['fragments/' + id]);
     }
 
     public reInitialiseGrid() {

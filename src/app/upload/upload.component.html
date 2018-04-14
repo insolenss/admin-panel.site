@@ -18,6 +18,17 @@
   <button kendoButton (click)="startThread()" [primary]="true">Add thread</button>
 </div>
 <hr />
+<div id="log-statuses" class="log-statuses">
+  <p>Logs statuses:</p>
+  <kendo-buttongroup>
+    <button kendoButton [togglable]="true" (click)="refreshLogs($event)">OK</button>
+    <button kendoButton [togglable]="true" (click)="refreshLogs($event)">NOT_GLOBAL</button>
+    <button kendoButton [togglable]="true" (click)="refreshLogs($event)">NOT_CREATED</button>
+    <button kendoButton [togglable]="true" (click)="refreshLogs($event)">EXIST</button>
+    <button kendoButton [togglable]="true" (click)="refreshLogs($event)">DELETED</button>
+  </kendo-buttongroup>
+</div>
+<hr />
 <table class="threads">
   <thead>
     <tr class="thread">
@@ -52,7 +63,7 @@
       </td>
       <td class="thread-controls"><button type="button" (click)="showLogs(thread.id)">Show Logs</button></td>
     </tr>
-    <tr class="thread-logs" id="thread-logs-{{ thread.id }}">
+    <tr class="thread-logs" id="thread-logs-{{ thread.id }}" [attr.data-thread-id]="thread.id">
       <td colspan="7">
         <div>
           <p *ngFor="let logRecord of thread.logs">{{ logRecord | json }}</p>

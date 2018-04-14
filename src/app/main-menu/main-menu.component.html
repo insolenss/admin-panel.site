@@ -10,6 +10,7 @@
     <li><a routerLink="/tags" routerLinkActive="active">Tags</a></li>
     <li><a routerLink="/splices" routerLinkActive="active">Splices</a></li>
     <li><a routerLink="/handles" routerLinkActive="active">Handles</a></li>
+    <li><a routerLink="/ratings" routerLinkActive="active">Ratings</a></li>
   </ul>
 </div>
 <div class="global-filters">
@@ -21,7 +22,7 @@
     <li>Splice: <span [ngClass]="({'with-param': userParamsService.searchSplice})">{{ userParamsService.searchSplice ? userParamsService.searchSplice : 'none' }}</span><span *ngIf="userParamsService.searchSplice" class="k-icon k-i-close-circle" (click)="userParamsService.clear();"></span></li>
   </ul>
 </div>
-<div class="navigation-link">
+<div class="navigation-link" *ngIf="userParamsService.isAdmin()">
   <div class="main-menu-title">Tools</div>
   <ul>
     <li><a routerLink="/register-user" routerLinkActive="active">Register users</a></li>
